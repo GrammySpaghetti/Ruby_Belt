@@ -1,0 +1,39 @@
+<h1>Orgs#show</h1>
+<p>Find me in app/views/orgs/show.html.erb</p>
+<div class="col-lg-8 border border-dark m-1 p-1">
+  <h4 class='d-inline-block'><%= @org.name %></h4>
+  <% if @org.user_id == session[:user_id] %>
+    <form class="d-inline-block" action="/orgs/<%= params[:id] %>" method="post">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <input type="hidden" name="_method" value="delete">
+      <input type="hidden" name="membership[org_id]" value="<%= params[:id] %>">
+      <button class="badge badge-danger" type="submit" name="button">Delete Organiztion</button>
+    </form>
+  <% end %>
+  <% if @users.include?(current_user) %>
+    <form class="d-inline-block" action="/memberships/<%= @m.id %>" method="post">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <input type="hidden" name="_method" value="delete">
+      <input type="hidden" name="membership[org_id]" value="<%= params[:id] %>">
+
+      <button class="badge badge-info" type="submit" name="button">Leave Group</button>
+    </form>
+  <% else %>
+    <form class="d-inline-block" action="/memberships" method="post">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <input type="hidden" name="membership[org_id]" value="<%= params[:id] %>">
+      <button class="badge badge-success" type="submit" name="button">Join Group</button>
+    </form>
+  <% end %>
+  <p>Description: <%= @org.desc %></p>
+
+  <% if @org.user_id == session[:user_id] %>
+    <h4>Created by: YOU</h4>
+  <% else %>
+    <h4>Created by: <%= @org.user.first_name %> <%= @org.user.last_name %></h4>
+  <% end %>
+  <h6>Members:</h6>
+    <% @users.each do |i| %>
+      <p><%= i.first_name %> <%= i.last_name %></p>
+    <% end %>
+</div>
